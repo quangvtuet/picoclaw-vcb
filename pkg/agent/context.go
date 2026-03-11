@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
+	// "github.com/sipeed/picoclaw/pkg/config"
 	"github.com/sipeed/picoclaw/pkg/logger"
 	"github.com/sipeed/picoclaw/pkg/providers"
 	"github.com/sipeed/picoclaw/pkg/skills"
@@ -80,33 +80,39 @@ func NewContextBuilder(workspace string) *ContextBuilder {
 }
 
 func (cb *ContextBuilder) getIdentity() string {
-	workspacePath, _ := filepath.Abs(filepath.Join(cb.workspace))
-	toolDiscovery := cb.getDiscoveryRule()
-	version := config.FormatVersion()
+	// workspacePath, _ := filepath.Abs(filepath.Join(cb.workspace))
+	// toolDiscovery := cb.getDiscoveryRule()
+	// version := config.FormatVersion()
 
-	return fmt.Sprintf(
-		`# picoclaw 🦞 (%s)
+	return `# Identity
 
-You are picoclaw, a helpful AI assistant.
+	Tên: Hưng
 
-## Workspace
-Your workspace is at: %s
-- Memory: %s/memory/MEMORY.md
-- Daily Notes: %s/memory/YYYYMM/YYYYMMDD.md
-- Skills: %s/skills/{skill-name}/SKILL.md
+	Role: Fullstack Developer & Solution Architect tại Atomi Digital.
 
-## Important Rules
+	Sinh năm 1989, quê Kiêu Kỵ, Gia Lâm, Hà Nội.
 
-1. **ALWAYS use tools** - When you need to perform an action (schedule reminders, send messages, execute commands, etc.), you MUST call the appropriate tool. Do NOT just say you'll do it or pretend to do it.
+	## Chuyên môn
 
-2. **Be helpful and accurate** - When using tools, briefly explain what you're doing.
+	- Backend development
+	- System architecture
+	- Java ecosystem
+	- Oracle / PostgreSQL / NoSQL
+	- Docker
+	- Kubernetes
+	- Microservices
+	- DevOps automation
 
-3. **Memory** - When interacting with me if something seems memorable, update %s/memory/MEMORY.md
+	## Phong cách làm việc
 
-4. **Context summaries** - Conversation summaries provided as context are approximate references only. They may be incomplete or outdated. Always defer to explicit user instructions over summary content.
+	Thực tế, tập trung giải quyết vấn đề kỹ thuật.
 
-%s`,
-		version, workspacePath, workspacePath, workspacePath, workspacePath, workspacePath, toolDiscovery)
+	Luôn ưu tiên:
+
+	- giải pháp đơn giản
+	- architecture rõ ràng
+	- ví dụ thực tế
+	- command cụ thể `
 }
 
 func (cb *ContextBuilder) getDiscoveryRule() string {
@@ -141,20 +147,20 @@ func (cb *ContextBuilder) BuildSystemPrompt() string {
 	}
 
 	// Skills - show summary, AI can read full content with read_file tool
-	skillsSummary := cb.skillsLoader.BuildSkillsSummary()
-	if skillsSummary != "" {
-		parts = append(parts, fmt.Sprintf(`# Skills
+// 	skillsSummary := cb.skillsLoader.BuildSkillsSummary()
+// 	if skillsSummary != "" {
+// 		parts = append(parts, fmt.Sprintf(`# Skills
 
-The following skills extend your capabilities. To use a skill, read its SKILL.md file using the read_file tool.
+// The following skills extend your capabilities. To use a skill, read its SKILL.md file using the read_file tool.
 
-%s`, skillsSummary))
-	}
+// %s`, skillsSummary))
+// 	}
 
-	// Memory context
-	memoryContext := cb.memory.GetMemoryContext()
-	if memoryContext != "" {
-		parts = append(parts, "# Memory\n\n"+memoryContext)
-	}
+	// // Memory context
+	// memoryContext := cb.memory.GetMemoryContext()
+	// if memoryContext != "" {
+	// 	parts = append(parts, "# Memory\n\n"+memoryContext)
+	// }
 
 	// Join with "---" separator
 	return strings.Join(parts, "\n\n---\n\n")
